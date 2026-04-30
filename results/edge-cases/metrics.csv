@@ -1,5 +1,5 @@
-file,status,score,java_lines,kotlin_lines,java_classes,kotlin_classes,java_methods,kotlin_methods,findings
-"src/main/java/cases/AnnotationDenseCommand.java","needs-review","76","22","22","3","3","5","5","Kotlin output still contains 6 Java syntax markers."
-"src/main/java/cases/GenericWildcardsAndCheckedExceptions.java","needs-review","80","16","16","1","1","2","2","Kotlin output still contains 5 Java syntax markers."
-"src/main/java/cases/NestedAnonymousClasses.java","poor","62","23","23","1","1","4","4","Kotlin output still contains 8 Java syntax markers.; Anonymous classes were present but no Kotlin lambda/object-expression signal was detected."
-"src/main/java/cases/OverloadsAndVarargs.java","needs-review","80","15","15","1","1","4","4","Kotlin output still contains 5 Java syntax markers."
+file,status,score,suspiciousness,java_lines,kotlin_lines,java_classes,kotlin_classes,java_interfaces,kotlin_interfaces,java_enums,kotlin_enums,java_methods,kotlin_functions,java_annotations,kotlin_annotations,kotlin_java_only_markers,kotlin_todo_error_unsupported_markers,java_anonymous_classes,kotlin_anonymous_signals,findings
+"src/main/java/cases/AnnotationDenseCommand.java","needs-review","76","24","22","22","1","1","2","2","0","0","5","5","7","7","6","0","0","0","Kotlin output still contains 6 Java-only syntax markers."
+"src/main/java/cases/GenericWildcardsAndCheckedExceptions.java","needs-review","80","20","16","16","1","1","0","0","0","0","2","2","0","0","5","0","0","0","Kotlin output still contains 5 Java-only syntax markers."
+"src/main/java/cases/NestedAnonymousClasses.java","poor","48","52","23","23","1","1","0","0","0","0","4","4","2","2","8","0","2","0","Kotlin output still contains 8 Java-only syntax markers.; Anonymous classes were present but no Kotlin lambda/object-expression signal was detected.; Converted Kotlin still has 2 Java anonymous-class shaped markers."
+"src/main/java/cases/OverloadsAndVarargs.java","needs-review","80","20","15","15","1","1","0","0","0","0","4","4","0","0","5","0","0","0","Kotlin output still contains 5 Java-only syntax markers."
