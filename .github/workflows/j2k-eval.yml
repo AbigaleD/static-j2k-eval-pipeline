@@ -1,0 +1,45 @@
+name: Static J2K Evaluation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  j2k-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout solution repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Checkout benchmark project
+        run: |
+          rm -rf benchmark/picocli
+          mkdir -p benchmark
+          git clone --depth 1 https://github.com/remkop/picocli.git benchmark/picocli
+
+      - name: Run static J2K conversion
+        run: |
+          bash scripts/run-j2k.sh benchmark/picocli converted/picocli
+
+      - name: Run Kotlin evaluator
+        run: |
+          bash scripts/run-evaluator.sh benchmark/picocli converted/picocli results/picocli
+
+      - name: Run edge-case stress dataset
+        run: |
+          bash scripts/run-j2k.sh edge-cases converted/edge-cases
+          bash scripts/run-evaluator.sh edge-cases converted/edge-cases results/edge-cases
+
+      - name: Upload evaluation results
+        uses: actions/upload-artifact@v4
+        with:
+          name: j2k-evaluation-results
+          path: results/

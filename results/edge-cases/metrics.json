@@ -1,0 +1,6 @@
+[
+  {"file":"src/main/java/cases/AnnotationDenseCommand.java","status":"needs-review","score":76,"findings":["Kotlin output still contains 6 Java syntax markers."]},
+  {"file":"src/main/java/cases/GenericWildcardsAndCheckedExceptions.java","status":"needs-review","score":80,"findings":["Kotlin output still contains 5 Java syntax markers."]},
+  {"file":"src/main/java/cases/NestedAnonymousClasses.java","status":"poor","score":62,"findings":["Kotlin output still contains 8 Java syntax markers.","Anonymous classes were present but no Kotlin lambda/object-expression signal was detected."]},
+  {"file":"src/main/java/cases/OverloadsAndVarargs.java","status":"needs-review","score":80,"findings":["Kotlin output still contains 5 Java syntax markers."]}
+]
