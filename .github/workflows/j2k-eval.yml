@@ -23,7 +23,12 @@ jobs:
         run: |
           rm -rf benchmark/picocli
           mkdir -p benchmark
-          git clone --depth 1 https://github.com/remkop/picocli.git benchmark/picocli
+          BENCHMARK_REPOSITORY="${{ vars.BENCHMARK_REPOSITORY }}"
+          if [ -z "$BENCHMARK_REPOSITORY" ]; then
+            BENCHMARK_REPOSITORY="https://github.com/remkop/picocli.git"
+          fi
+          echo "Using benchmark repository: $BENCHMARK_REPOSITORY"
+          git clone --depth 1 "$BENCHMARK_REPOSITORY" benchmark/picocli
 
       - name: Run static J2K conversion
         run: |
@@ -37,6 +42,39 @@ jobs:
         run: |
           bash scripts/run-j2k.sh edge-cases converted/edge-cases
           bash scripts/run-evaluator.sh edge-cases converted/edge-cases results/edge-cases
+
+      - name: Run SAM post-processor on edge cases
+        run: |
+          bash scripts/run-postprocessor.sh \
+            converted/edge-cases \
+            converted/edge-cases-postprocessed \
+            results/edge-cases/postprocessed
+
+      - name: Test SAM post-processor
+        run: |
+          bash scripts/test-postprocessor.sh
+
+      - name: Re-evaluate edge cases after SAM post-processing
+        run: |
+          bash scripts/run-evaluator.sh \
+            edge-cases \
+            converted/edge-cases-postprocessed \
+            results/edge-cases-postprocessed
+
+      - name: Validate evaluation artifacts
+        run: |
+          test -s results/picocli/summary.md
+          test -s results/picocli/metrics.csv
+          test -s results/picocli/metrics.json
+          test -s results/edge-cases/summary.md
+          test -s results/edge-cases/metrics.csv
+          test -s results/edge-cases/metrics.json
+          test -s results/edge-cases-postprocessed/summary.md
+          test -s results/edge-cases-postprocessed/metrics.csv
+          test -s results/edge-cases-postprocessed/metrics.json
+          jq '.summary.fileCoveragePercent' results/picocli/metrics.json
+          jq '.summary.fileCoveragePercent' results/edge-cases/metrics.json
+          jq '.summary.fileCoveragePercent' results/edge-cases-postprocessed/metrics.json
 
       - name: Upload evaluation results
         uses: actions/upload-artifact@v4

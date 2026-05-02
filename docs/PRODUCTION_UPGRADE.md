@@ -1,8 +1,8 @@
 # Production Upgrade Path
 
-## Replace Fallback Conversion
+## Harden Real J2K Conversion
 
-To measure real JetBrains static J2K quality, replace fallback conversion with a wrapper around the IntelliJ/Kotlin plugin J2K implementation.
+This repository now contains an experimental wrapper around the IntelliJ/Kotlin plugin J2K implementation. To make it production-grade, harden it into a stable wrapper rather than relying on the current minimal PSI runtime.
 
 Expected wrapper contract:
 
@@ -12,16 +12,17 @@ java -jar "$J2K_CLI_JAR" input.java output.kt
 
 Recommended steps:
 
-1. Build a small IntelliJ Platform/Kotlin plugin based CLI jar.
-2. Initialize an IntelliJ project model for the checked-out Java repository.
+1. Package `j2k-wrapper/src/main/java/StaticJ2kCli.java` as a proper IntelliJ Platform based CLI jar.
+2. Initialize a real IntelliJ project model for the checked-out Java repository.
 3. Load Java files through PSI rather than plain text.
 4. Invoke the Kotlin plugin's J2K converter on each selected `PsiJavaFile`.
 5. Run the converter post-processor/formatter.
 6. Write each converted Kotlin file to the requested output path.
-7. Set `J2K_CLI_JAR` in GitHub Actions and local runs.
-8. Keep fallback mode only for smoke tests where the real wrapper is unavailable.
+7. Set `J2K_CLI_JAR` or `J2K_CLI_CMD` in GitHub Actions and local runs.
+8. Preserve `J2K_CONTINUE_ON_ERROR=1` for large benchmark sweeps so isolated converter failures can be reported as missing files instead of aborting the whole run.
+9. Keep fallback mode only for smoke tests where the real wrapper is unavailable.
 
-The pipeline already has the adapter point in `scripts/run-j2k.sh`; the production change is to provide and configure the real wrapper.
+The pipeline already has the adapter point in `scripts/run-j2k.sh`; the production change is to use the hardened wrapper in CI.
 
 ## Improve Evaluation With PSI
 

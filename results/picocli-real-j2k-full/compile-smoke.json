@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "kotlinFiles": 412,
+  "errors": 1,
+  "warnings": 0,
+  "message": "Generated Kotlin did not compile in a standalone smoke test. This is recorded as a diagnostic signal only; it does not fail the pipeline."
+}

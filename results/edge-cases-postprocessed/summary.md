@@ -1,8 +1,8 @@
 # Static J2K Evaluation Summary
 
 - Source project: `edge-cases`
-- Converted project: `converted/edge-cases`
-- Converter mode: `static-fallback-translator`
+- Converted project: `converted/edge-cases-postprocessed`
+- Converter mode: `static-fallback-translator+sam-postprocessed`
 - Java files considered: 8
 - Kotlin files produced: 8
 - Matched Java/Kotlin pairs: 8
@@ -11,7 +11,7 @@
 - Average suspiciousness: 24/100
 - Status counts: good=2, needs-review=5, poor=1
 - Source hash: `9f54fde1d39b21c2`
-- Converted hash: `ad40764ead1305aa`
+- Converted hash: `356e0f57cf01348a`
 
 ## Preservation Metrics
 

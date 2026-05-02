@@ -79,10 +79,11 @@ fun main(args: Array<String>) {
     }
 
     val convertedFiles = convertedRoot.walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
-    val summary = buildSummary(args[0], args[1], sourceRoot, convertedRoot, pairResults, convertedFiles)
+    val conversionMode = readConversionMode(convertedRoot)
+    val summary = buildSummary(args[0], args[1], sourceRoot, convertedRoot, pairResults, convertedFiles, conversionMode)
     File(resultsRoot, "summary.md").writeText(summary)
     File(resultsRoot, "metrics.csv").writeText(buildCsv(pairResults))
-    File(resultsRoot, "metrics.json").writeText(buildJson(pairResults))
+    File(resultsRoot, "metrics.json").writeText(buildJson(pairResults, convertedFiles, conversionMode))
 
     println(summary)
 }
@@ -206,6 +207,7 @@ fun buildSummary(
     convertedRoot: File,
     results: List<PairResult>,
     convertedFiles: List<File>,
+    conversionMode: String,
 ): String {
     val aggregate = aggregateMetrics(results, convertedFiles)
     val statuses = results.groupingBy { it.status }.eachCount().toSortedMap()
@@ -218,6 +220,7 @@ fun buildSummary(
         appendLine()
         appendLine("- Source project: `$sourceLabel`")
         appendLine("- Converted project: `$convertedLabel`")
+        appendLine("- Converter mode: `$conversionMode`")
         appendLine("- Java files considered: ${aggregate.sourceFiles}")
         appendLine("- Kotlin files produced: ${aggregate.convertedFiles}")
         appendLine("- Matched Java/Kotlin pairs: ${aggregate.matchedFiles}")
@@ -287,12 +290,14 @@ fun buildCsv(results: List<PairResult>): String = buildString {
     }
 }
 
-fun buildJson(results: List<PairResult>): String = buildString {
-    val aggregate = aggregateMetrics(results, emptyList())
+fun buildJson(results: List<PairResult>, convertedFiles: List<File>, conversionMode: String): String = buildString {
+    val aggregate = aggregateMetrics(results, convertedFiles)
     val top = mostSuspicious(results, 10)
     appendLine("{")
     appendLine("  \"summary\": {")
+    appendLine("    \"converterMode\": \"${json(conversionMode)}\",")
     appendLine("    \"sourceFiles\": ${aggregate.sourceFiles},")
+    appendLine("    \"convertedFiles\": ${aggregate.convertedFiles},")
     appendLine("    \"matchedFiles\": ${aggregate.matchedFiles},")
     appendLine("    \"fileCoveragePercent\": ${aggregate.fileCoveragePercent},")
     appendLine("    \"averageScore\": ${aggregate.averageScore},")
@@ -383,6 +388,13 @@ fun aggregateMetrics(results: List<PairResult>, convertedFiles: List<File>): Agg
 fun mostSuspicious(results: List<PairResult>, limit: Int): List<PairResult> =
     results.sortedWith(compareByDescending<PairResult> { it.suspiciousness }.thenBy { it.relativePath }).take(limit)
 
+fun readConversionMode(convertedRoot: File): String {
+    val modeFile = File(convertedRoot, "conversion-mode.txt")
+    if (!modeFile.isFile) return "unknown"
+    val modeLine = modeFile.readLines().firstOrNull { it.startsWith("mode=") } ?: return "unknown"
+    return modeLine.substringAfter("mode=").ifBlank { "unknown" }
+}
+
 fun countMarkers(text: String, patterns: Map<String, String>): Map<String, Int> =
     patterns.mapValues { (_, pattern) -> Regex(pattern).findAll(text).count() }
 
@@ -400,11 +412,23 @@ fun stableDirectoryHash(root: File): String {
     if (!root.exists()) return "missing"
     root.walkTopDown()
         .filter { it.isFile }
+        .filter {
+            val rel = it.relativeTo(root).invariantSeparatorsPath
+            !rel.startsWith(".git/") &&
+                (rel.endsWith(".java") || rel.endsWith(".kt") || rel == "conversion-mode.txt")
+        }
         .sortedBy { it.relativeTo(root).invariantSeparatorsPath }
         .forEach {
             digest.update(it.relativeTo(root).invariantSeparatorsPath.toByteArray())
             digest.update(0)
-            digest.update(it.readBytes())
+            it.inputStream().use { input ->
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                while (true) {
+                    val read = input.read(buffer)
+                    if (read < 0) break
+                    digest.update(buffer, 0, read)
+                }
+            }
         }
     return digest.digest().joinToString("") { "%02x".format(it) }.take(16)
 }

@@ -1,0 +1,9 @@
+file,status,score,suspiciousness,java_lines,kotlin_lines,java_classes,kotlin_classes,java_interfaces,kotlin_interfaces,java_enums,kotlin_enums,java_methods,kotlin_functions,java_annotations,kotlin_annotations,kotlin_java_only_markers,kotlin_todo_error_unsupported_markers,java_anonymous_classes,kotlin_anonymous_signals,findings
+"cases/AnnotationDenseCommand.java","good","96","4","22","16","1","3","2","0","0","0","5","4","7","6","1","0","0","0","Kotlin output still contains 1 Java-only syntax markers."
+"cases/BuilderPatternWithFluentApi.java","needs-review","65","35","61","66","2","2","0","0","0","0","16","25","0","0","10","0","0","0","Kotlin output still contains 10 Java-only syntax markers."
+"cases/DefaultMethodsAndNestedInterfaces.java","needs-review","84","16","35","35","1","1","2","2","0","0","10","18","3","4","4","0","1","1","Kotlin output still contains 4 Java-only syntax markers."
+"cases/GenericWildcardsAndCheckedExceptions.java","good","100","0","16","18","1","1","0","0","0","0","2","2","0","1","0","0","0","0","No heuristic issues detected."
+"cases/NestedAnonymousClasses.java","good","100","0","23","22","1","1","0","0","0","0","4","9","2","2","0","0","2","2","No heuristic issues detected."
+"cases/OverloadsAndVarargs.java","good","100","0","15","14","1","1","0","0","0","0","4","7","0","0","0","0","0","0","No heuristic issues detected."
+"cases/RawTypesAndLegacyCollections.java","good","92","8","33","33","1","1","0","0","0","0","7","7","1","1","2","0","0","0","Kotlin output still contains 2 Java-only syntax markers."
+"cases/StaticInitializersAndConstants.java","good","88","12","23","22","1","0","0","0","0","0","3","3","0","0","1","0","0","0","Class/interface/enum/record declaration count dropped by 1.; Kotlin output still contains 1 Java-only syntax markers."

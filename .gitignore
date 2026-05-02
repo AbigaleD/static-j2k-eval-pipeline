@@ -1,6 +1,31 @@
 benchmark/
 converted/
 .tools/
+
+# Build and IDE output
 .gradle/
+.kotlin/
 build/
+out/
+target/
 .DS_Store
+*.iml
+.idea/
+*.class
+
+# Local archives, binaries, and diagnostics
+*.jar
+*.zip
+*.tar.gz
+*.tmp
+*.hprof
+*.log
+
+# Local machine configuration
+.env
+.env.*
+!.env.example
+local.properties
+
+# Keep selected checked-in evaluation evidence.
+!results/**/conversion-errors.log

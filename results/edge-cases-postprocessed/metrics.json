@@ -1,6 +1,6 @@
 {
   "summary": {
-    "converterMode": "static-fallback-translator",
+    "converterMode": "static-fallback-translator+sam-postprocessed",
     "sourceFiles": 8,
     "convertedFiles": 8,
     "matchedFiles": 8,
